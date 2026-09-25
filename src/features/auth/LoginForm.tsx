@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const userNameSchema = z
   .string()
@@ -49,7 +50,7 @@ function LoginForm() {
         <div className="relative w-full">
           <InputField
             id="password"
-            type="password"
+            type={passwordRevealed ? "text" : "password"}
             placeholder="********"
             className="pr-10"
             {...register("password")}
@@ -113,9 +114,12 @@ function LoginForm() {
       <AuthButton className="text-[16px]">Login</AuthButton>
       <span className="realtive self-center text-[16px] text-black/60">
         Don't have an account?{" "}
-        <a className="font-[Satoshi-Italic] text-black hover:underline cursor-pointer">
+        <Link
+          to="/register"
+          className="self-center font-[Satoshi-Italic] text-[16px] text-black hover:underline"
+        >
           Register here
-        </a>
+        </Link>
       </span>
     </Form>
   );
