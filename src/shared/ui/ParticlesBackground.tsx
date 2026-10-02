@@ -1,23 +1,11 @@
 import { useMemo } from "react";
-import Particles, { ParticlesProvider } from "@tsparticles/react";
+import Particles from "@tsparticles/react";
 import {
-  type Container,
-  type Engine,
   type ISourceOptions,
   MoveDirection,
   OutMode,
 } from "@tsparticles/engine";
-import { loadSlim } from "@tsparticles/slim";
-
-const particlesInit = async (engine: Engine): Promise<void> => {
-  await loadSlim(engine);
-};
-
 const ParticlesBackground = () => {
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
-
   const options: ISourceOptions = useMemo(
     () => ({
       fullScreen: {
@@ -25,7 +13,7 @@ const ParticlesBackground = () => {
       },
       background: {
         color: {
-          value: "#7A8DB9",
+          value: "#000000",
         },
       },
       fpsLimit: 120,
@@ -72,9 +60,9 @@ const ParticlesBackground = () => {
         },
         number: {
           density: {
-            enable: true,
+            enable: false,
           },
-          value: 300,
+          value: 50,
         },
         opacity: {
           value: 0.5,
@@ -92,14 +80,10 @@ const ParticlesBackground = () => {
   );
 
   return (
-    <ParticlesProvider init={particlesInit}>
-      <Particles
-        id="tsparticles"
-        className="absolute inset-0 w-full h-full"
-        particlesLoaded={particlesLoaded}
-        options={options}
-      />
-    </ParticlesProvider>
+    <Particles
+      className="absolute inset-0 w-full h-full bg-cover"
+      options={options}
+    />
   );
 };
 

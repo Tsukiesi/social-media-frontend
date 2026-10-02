@@ -1,52 +1,52 @@
 import AuthButton from "@/shared/ui/AuthButton";
 import Form from "@/shared/ui/Form";
 import InputField from "@/shared/ui/InputField";
-import Checkbox from "@/shared/ui/Checkbox";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
-const userNameSchema = z
-  .string()
-  .min(3)
-  .max(30)
-  .regex(
-    /^[a-zA-Z0-9_]+$/,
-    "Wrong username format, it can contain only letters? numbers and underscore",
-  );
-const emailSchema = z.email({ error: "Wrong email format" });
-const LoginSchema = z.object({
-  username: emailSchema.or(userNameSchema),
-  password: z
-    .string()
-    .min(8, { error: "Password must contain at least 8 characters" }),
-});
-type LoginFormState = z.infer<typeof LoginSchema>;
+const NewPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { error: "Password must contain at least 8 characters" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.confirmPassword === data.password, {
+    error: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type NewPasswordFormState = z.infer<typeof NewPasswordSchema>;
 const onSubmit = () => {
   console.log("Data sent to the server");
 };
-function LoginForm() {
+function NewPasswordForm() {
   const [passwordRevealed, setPasswordRevealed] = useState<boolean>(false);
-  const { register, handleSubmit, formState } = useForm<LoginFormState>({
-    resolver: zodResolver(LoginSchema),
+  const { register, handleSubmit, formState } = useForm<NewPasswordFormState>({
+    resolver: zodResolver(NewPasswordSchema),
   });
   const { errors } = formState;
+  const navigate = useNavigate();
   return (
     <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-      <span className="relative top-0 self-center text-[28px]">Login</span>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="username">Username</label>
-        <InputField
-          id="username"
-          placeholder="User"
-          {...register("username")}
-        />
-      </div>
+      <span className="relative top-0 self-center text-[28px]">
+        Please enter your new password
+      </span>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="password">Password</label>
+        <div className="flex flex-col">
+          <span className="text-center text-black/60">
+            Your new password must be different
+          </span>
+          <span className="text-center text-black/60">
+            from previously used password
+          </span>
+        </div>
+
+        <label htmlFor="password">New password</label>
         <div className="relative w-full">
           <InputField
             id="password"
@@ -102,30 +102,30 @@ function LoginForm() {
         </div>
       </div>
 
-      <div className="flex justify-between text-[16px]">
-        <label className="flex gap-2 items-center justify-center cursor-pointer select-none">
-          <Checkbox />
-          <span className="text-black/60">Remember me</span>
-        </label>
-        <Link
-          to="/forgot-password"
-          className="font-[Satoshi-Italic] hover:underline"
-        >
-          Forgot password?
-        </Link>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="confirm-password">Confirm new password</label>
+        <div className="relative w-full">
+          <InputField
+            id="confirm-password"
+            type={passwordRevealed ? "text" : "password"}
+            placeholder="********"
+            className="pr-10"
+            {...register("confirmPassword")}
+          />
+        </div>
       </div>
-      <AuthButton className="text-[16px]">Login</AuthButton>
-      <span className="realtive self-center text-[16px] text-black/60">
-        Don't have an account?{" "}
-        <Link
-          to="/register"
-          className="self-center font-[Satoshi-Italic] text-[16px] text-black hover:underline"
-        >
-          Register here
-        </Link>
-      </span>
+
+      <AuthButton className="text-[16px]" onClick={() => navigate("/")}>
+        Update password
+      </AuthButton>
+      <Link
+        to="/"
+        className="self-center font-[Satoshi-Italic] text-[16px] hover:underline"
+      >
+        Back to Login
+      </Link>
     </Form>
   );
 }
 
-export default LoginForm;
+export default NewPasswordForm;

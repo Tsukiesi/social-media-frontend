@@ -6,7 +6,7 @@ function AuthButton({
 }: ComponentProps<"button">) {
   return (
     <button
-      className={`relative w-100 self-center bg-white rounded-[10px] pt-3 pb-3 border border-black/40 cursor-pointer ${className}`}
+      className={`w-100 self-center bg-white rounded-[10px] py-3 border border-black/40 cursor-pointer ${className}`}
       {...rest}
     >
       {children}
